@@ -100,27 +100,29 @@ FROM crewsum cw INNER JOIN maxnum mn
 ON cw.sumnum = mn.maxnum;
 
 -- Q1.9
-
-
-
-
-
-
-
-
-
+With nominated AS
+(	SELECT d.id, COUNT(*) AS NoOfNominated 
+	FROM director d RIGHT JOIN director_award da
+	ON d.title = da.title
+	AND d.production_year = da.production_year
+	WHERE da.result = 'nominated'
+	GROUP BY d.id)
+SELECT n1.id
+FROM nominated n1
+WHERE n1.NoOfNominated = 
+(	SELECT MAX(n2.NoOfNominated)
+	FROM nominated n2);
 
 -- Q1.10
-
-
-
-
-
-
-
-
-
-
+With age AS
+(	SELECT ca.id, ca.year_of_award - p.year_born AS age
+	FROM crew_award ca LEFT JOIN person p
+	ON ca.id = p.id
+	WHERE ca.result = 'won')
+SELECT a1.id, a2.id
+FROM age a1 INNER JOIN age a2
+ON a1.age = a2.age
+AND a1.id > a2.id;
 
 ----------------------------------------------------------------
 -- End of your answers
